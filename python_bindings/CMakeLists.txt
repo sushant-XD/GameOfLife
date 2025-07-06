@@ -1,0 +1,2 @@
+pybind11_add_module(py_game_of_life bindings.cpp)
+target_link_libraries(py_game_of_life PRIVATE grids)
