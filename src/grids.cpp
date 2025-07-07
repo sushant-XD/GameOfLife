@@ -2,7 +2,7 @@
 Grids::Grids(int rows, int columns) {
   this->rows = rows;
   this->columns = columns;
-  // basically I need a 2d matrix of n rows and m columns stored in a vector in
+  // basically a 2d matrix of n rows and m columns stored in a vector in
   // which 1 means there is life and 0 means there is no life firstly, when we
   // create grids with x rows and y columns, create and assign an empty 2d
   // vector with all 0
@@ -21,16 +21,34 @@ void Grids::print_grids() {
   }
 }
 
-void Grids::set_grid(std::vector<std::pair<int, int>> coordinates) {
-  // so here we get the vector of pair of co-ordinates that we need to set thee
-  // life to 1
-  for (size_t i = 0; i < coordinates.size(); i++) {
-    std::pair<int, int> coordinate = coordinates[i];
-    grid[coordinate.first][coordinate.second] = 1;
+std::vector<std::vector<int>> Grids::get_grid() const { return grid; }
+
+void Grids::reset_grid() {
+  for (int i = 0; i < rows; i++) {
+    for (int j = 0; j < columns; j++) {
+      grid[i][j] = 0;
+    }
   }
 }
 
-void Grids::update_grid() {
+void Grids::set_grid(std::vector<std::pair<int, int>> coordinates) {
+  // so here we get the vector of pair of co-ordinates that we need to set thee
+  // life to 1
+  reset_grid();
+
+  for (const auto &coordinate : coordinates) {
+    int x = coordinate.first;
+    int y = coordinate.second;
+    if (x >= rows || y >= columns || x < 0 || y < 0) {
+      std::cout << "X and Y indices out of bound. Not responding" << std::endl;
+      continue;
+    } else {
+      grid[x][y] = 1;
+    }
+  }
+}
+
+std::vector<std::vector<int>> Grids::update_grid() {
   // here, in every element in the grid, we need to check: elements on the
   // adjacent 8 sides
   nextgrid = grid;
@@ -68,4 +86,5 @@ void Grids::update_grid() {
     }
   }
   grid = nextgrid;
+  return grid;
 }

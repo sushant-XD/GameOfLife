@@ -12,8 +12,10 @@ public:
   ~Grids(){
       // empty
   };
+  std::vector<std::vector<int>> get_grid() const;
   void print_grids();
   void create_grids();
-  void update_grid();
+  void reset_grid();
+  std::vector<std::vector<int>> update_grid();
   void set_grid(std::vector<std::pair<int, int>> coordinates);
 };
