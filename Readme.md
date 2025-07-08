@@ -55,4 +55,4 @@ cd ..
 python3 python_ui/main.py 
 
 ```
-This is a basic implementation of C++ and interfacing C++ with python.  
+This is a basic implementation meant for basic understanding interfacing C++ with python.  
