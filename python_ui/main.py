@@ -3,6 +3,9 @@ import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "build/python_bindings")))
 import py_game_of_life as gol
 import pygame
+import logging
+
+logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=logging.INFO)
 
 BACKGROUND_COLOR = (0,0,0) #black
 GRID_BORDER_COLOR = (50,50,50)
@@ -11,16 +14,20 @@ DEAD_COLOR = (30,30,30)
 
 CELL_SIZE = 20
 
-NUM_OF_ROWS = 20
-NUM_OF_COLS = 20
-
-WIDTH = NUM_OF_ROWS*CELL_SIZE
-HEIGHT = NUM_OF_COLS*CELL_SIZE
+WIDTH = 648
+HEIGHT = 480
 
 SCREEN_SIZE = WIDTH, HEIGHT
+
+NUM_OF_ROWS = HEIGHT // CELL_SIZE
+NUM_OF_COLS = WIDTH // CELL_SIZE
+
 def draw_grid(screen, grid):
-    for row in range(0,NUM_OF_ROWS):
-        for col in range(0,NUM_OF_COLS):
+    num_of_rows = len(grid)
+    num_of_cols = len(grid[0])
+    # print(f"Number of rows and columns: {num_of_rows},{num_of_cols}")
+    for row in range(0,num_of_rows):
+        for col in range(0,num_of_cols):
             rect = pygame.Rect(col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE)
             color = ALIVE_COLOR if grid[row][col] == 1 else DEAD_COLOR
             pygame.draw.rect(screen, color, rect)
@@ -46,8 +53,9 @@ def update_selected_grid(grid):
     return selected
 def main():
     pygame.init()
-
-    screen = pygame.display.set_mode(SCREEN_SIZE)
+    global SCREEN_SIZE
+    global NUM_OF_ROWS, NUM_OF_COLS, WIDTH, HEIGHT
+    screen = pygame.display.set_mode(SCREEN_SIZE, pygame.RESIZABLE)
     pygame.display.set_caption("Game Of Life")
     clock = pygame.time.Clock()
 
@@ -57,6 +65,17 @@ def main():
     selected_grid = set()
     while True:
         for event in pygame.event.get():
+            if event.type == pygame.VIDEORESIZE:
+                is_running = False
+                WIDTH, HEIGHT = event.w, event.h
+                SCREEN_SIZE = WIDTH, HEIGHT
+                NUM_OF_ROWS = HEIGHT // CELL_SIZE
+                NUM_OF_COLS = WIDTH // CELL_SIZE 
+                del g 
+                g = gol.Grids(NUM_OF_ROWS,NUM_OF_COLS)
+                print(f"Number of rows and columns: {NUM_OF_ROWS}, {NUM_OF_COLS}")
+                g.set_grid(list(selected_grid))
+                continue
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()

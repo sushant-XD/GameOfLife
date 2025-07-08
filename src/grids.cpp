@@ -54,33 +54,30 @@ std::vector<std::vector<int>> Grids::update_grid() {
   nextgrid = grid;
   for (int i = 0; i < rows; i++) {
     for (int j = 0; j < columns; j++) {
-      if ((i == 0) || (i == rows - 1) || (j == 0) || (j == columns - 1)) {
-        // edges
-        // not implemented right now, meaning if it is at the edge, kill the
-        // grid
-        nextgrid[i][j] = 0;
-      } else {
-        int aliveneighbors = grid[i - 1][j - 1] + grid[i - 1][j] +
-                             grid[i - 1][j + 1] + grid[i][j - 1] +
-                             grid[i][j + 1] + grid[i + 1][j - 1] +
-                             grid[i + 1][j] + grid[i + 1][j + 1];
-        if (grid[i][j] == 1) {
-          // if the element is alive
-          if (aliveneighbors < 2) {
-            // if neighbors are less than 3
-            nextgrid[i][j] = 0;
-          } else if (aliveneighbors <= 3) {
-            // if neighbors are 2 or three
-            nextgrid[i][j] = 1;
-          } else {
-            // if there are mroe than three neighbors
-            nextgrid[i][j] = 0;
-          }
+
+      int top = (i - 1 + rows) % rows;
+      int bottom = (i + 1) % rows;
+      int left = (j - 1 + columns) % columns;
+      int right = (j + 1) % columns;
+      int aliveneighbors = grid[top][left] + grid[top][j] + grid[top][right] +
+                           grid[i][left] + grid[i][right] + grid[bottom][left] +
+                           grid[bottom][j] + grid[bottom][right];
+      if (grid[i][j] == 1) {
+        // if the element is alive
+        if (aliveneighbors < 2) {
+          // if neighbors are less than 3
+          nextgrid[i][j] = 0;
+        } else if (aliveneighbors <= 3) {
+          // if neighbors are 2 or three
+          nextgrid[i][j] = 1;
         } else {
-          // if the element is dead
-          if (aliveneighbors == 3) {
-            nextgrid[i][j] = 1;
-          }
+          // if there are mroe than three neighbors
+          nextgrid[i][j] = 0;
+        }
+      } else {
+        // if the element is dead
+        if (aliveneighbors == 3) {
+          nextgrid[i][j] = 1;
         }
       }
     }
